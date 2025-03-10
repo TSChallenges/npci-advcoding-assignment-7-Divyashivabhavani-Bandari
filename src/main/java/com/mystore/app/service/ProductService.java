@@ -2,11 +2,11 @@ package com.mystore.app.service;
 
 import com.mystore.app.entity.Product;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -65,7 +65,7 @@ public class ProductService {
     }
 
     private Product findProductById(Integer id) {
-        for (Product p: products) {
+        for (Product p : products) {
             if (p.getId().intValue() == id.intValue()) {
                 return p;
             }
@@ -73,16 +73,31 @@ public class ProductService {
         return null;
     }
 
-    // TODO: Method to search products by name
+    // ✅ Method to search products by name (case-insensitive partial match)
+    public List<Product> findProductsByName(String name) {
+        return products.stream()
+                .filter(p -> p.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 
+    // ✅ Method to filter products by category (exact match)
+    public List<Product> filterProductsByCategory(String category) {
+        return products.stream()
+                .filter(p -> p.getCategory().equalsIgnoreCase(category))
+                .collect(Collectors.toList());
+    }
 
-    // TODO: Method to filter products by category
+    // ✅ Method to filter products by price range
+    public List<Product> filterProductsByPriceRange(double minPrice, double maxPrice) {
+        return products.stream()
+                .filter(p -> p.getPrice() >= minPrice && p.getPrice() <= maxPrice)
+                .collect(Collectors.toList());
+    }
 
-
-    // TODO: Method to filter products by price range
-
-
-    // TODO: Method to filter products by stock quantity range
-
-    
+    // ✅ Method to filter products by stock quantity range
+    public List<Product> filterProductsByStockRange(int minStock, int maxStock) {
+        return products.stream()
+                .filter(p -> p.getStockQuantity() >= minStock && p.getStockQuantity() <= maxStock)
+                .collect(Collectors.toList());
+    }
 }
